@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ProyectLauncher.Views.MainView">
+  <Panel Margin="20">
+    <StackPanel HorizontalAlignment="Center">
+      <TextBlock FontSize="25" FontWeight="Bold">Minecraft Launcher</TextBlock>
+      <TextBlock>by Mixgyt</TextBlock>
+    </StackPanel>
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="315" MaxWidth="315">
+      
+      <DockPanel Name="LauncherControls">
+        <StackPanel Margin="10">
+          <TextBlock>Versiones:</TextBlock>
+          <ComboBox Name="VersionsCombo"></ComboBox>
+        </StackPanel>
+        <StackPanel Margin="10">
+          <TextBlock>Nombre:</TextBlock>
+          <TextBox 
+            Name="NameBox" 
+            Watermark="Nombre de usuario" 
+            MinWidth="200"
+            MaxWidth="200"
+            TextAlignment="Center"></TextBox>
+          </StackPanel>
+      </DockPanel>
+      <ProgressBar Margin="10" Height="25" Name="LoadBar" Minimum="0" Maximum="100" ShowProgressText="True"/>
+      <TextBlock Name="LoadText" IsVisible="False"/>
+      <DockPanel HorizontalAlignment="Center">
+        <Button Width="300" Name="LaunchBt" Click="LaunchClick" HorizontalContentAlignment="Center">Lanzar</Button>
+      </DockPanel>
+      
+    </StackPanel>
+  </Panel>
+</UserControl>
