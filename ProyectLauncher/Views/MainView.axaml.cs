@@ -1,9 +1,16 @@
 ﻿using CmlLib.Core;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using MsBox.Avalonia;
 using System.Threading;
 using System.Reflection;
 using System;
+using MsBox.Avalonia.Enums;
+using MsBox.Avalonia.Dto;
+using MsBox.Avalonia.Models;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace ProyectLauncher.Views;
 
@@ -25,12 +32,12 @@ public partial class MainView : UserControl
         var versions = await MCLauncher.GetAllVersionsAsync();
         foreach (var v in versions)
         {
-            VersionsCombo.Items.Add(v.Name);
             if (v.IsLocalVersion)
             {
-                VersionsCombo.SelectedItem = v.Name;
+                VersionsCombo.Items.Add(v.Name);
             }
         }
+
 
         MCLauncher.FileChanged += (e) =>
         {
@@ -44,9 +51,11 @@ public partial class MainView : UserControl
         };
     }
 
-    public void LaunchClick(object sender, RoutedEventArgs e)
+    public async void LaunchClick(object sender, RoutedEventArgs e)
     {
-       
+        var result = await MessageBoxManager.GetMessageBoxStandard("Cancelar", "¿Desea cancelar la operacion?",ButtonEnum.YesNo,Icon.Warning).ShowAsPopupAsync(this);
+        if(result == ButtonResult.Yes)
+        { return; }
         Thread process = new(() => LaunchProcess());
         process.Name = "Launch";
         process.IsBackground = true;
