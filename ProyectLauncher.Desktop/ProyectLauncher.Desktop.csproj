@@ -20,6 +20,21 @@
     <StartupObject>ProyectLauncher.Desktop.Program</StartupObject>
     <AssemblyName>Launcher</AssemblyName>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <CFBundleName>Launcher</CFBundleName> <!-- Also defines .app file name -->
+    <CFBundleDisplayName>Launcher</CFBundleDisplayName>
+    <CFBundleIdentifier>com.mixstudio.launcher</CFBundleIdentifier>
+    <CFBundleVersion>0.1.5.7</CFBundleVersion>
+    <CFBundleShortVersionString>0.1.5</CFBundleShortVersionString>
+    <CFBundlePackageType>APPL</CFBundlePackageType>
+    <CFBundleSignature>????</CFBundleSignature>
+    <CFBundleExecutable>Lancher</CFBundleExecutable>
+    <CFBundleIconFile>avalonia-logo.icns</CFBundleIconFile> <!-- Will be copied from output directory -->
+    <NSPrincipalClass>Program</NSPrincipalClass>
+    <NSHighResolutionCapable>true</NSHighResolutionCapable>
+  </PropertyGroup>
+  
   <ItemGroup>
     <Content Include="avalonia-logo.ico" />
   </ItemGroup>
