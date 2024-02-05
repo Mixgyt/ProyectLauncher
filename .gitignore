@@ -392,6 +392,10 @@ test-results/
 .AppleDouble
 .LSOverride
 
+#Signer for MacOS app from: https://github.com/indygreg/apple-platform-rs/tree/apple-codesign/0.27.0/apple-codesign (rcodesign)
+#is excluded for later download if needed
+rcodesign 
+
 # Icon must end with two \r
 Icon
 
