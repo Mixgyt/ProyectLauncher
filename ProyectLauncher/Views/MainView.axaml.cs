@@ -11,6 +11,8 @@ using MsBox.Avalonia.Models;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Avalonia;
+using CmlLib.Core.Auth;
 
 namespace ProyectLauncher.Views;
 
@@ -56,22 +58,27 @@ public partial class MainView : UserControl
         var result = await MessageBoxManager.GetMessageBoxStandard("Cancelar", "¿Desea cancelar la operacion?",ButtonEnum.YesNo,Icon.Warning).ShowAsPopupAsync(this);
         if(result == ButtonResult.Yes)
         { return; }
-        Thread process = new(() => LaunchProcess());
+        MLaunchOption Options = new()
+        {
+            MaximumRamMb = 2028,
+            Session = MSession.CreateOfflineSession(NameBox.Text.Trim())
+        };
+        Thread process = new(() => LaunchProcess(Options));
         process.Name = "Launch";
         process.IsBackground = true;
         process.Start();
 
     }
 
-    private async void LaunchProcess()
+    private void LaunchProcess(MLaunchOption Options)
     {
-        MLaunchOption Options = new()
-        {
-            MaximumRamMb = 2028,
-            JavaPath = "C:\\Program Files\\Java\\jdk-17\\bin\\javaw.exe",
-        };
-
         var process = MCLauncher.CreateProcess($"{VersionsCombo.SelectedItem}", Options);
         process.Start();
+    }
+
+    private void OpenWindow(object sender, RoutedEventArgs e)
+    {
+        
+        
     }
 }
