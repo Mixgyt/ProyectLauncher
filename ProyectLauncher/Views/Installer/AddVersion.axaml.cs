@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Interactivity;
 
 namespace ProyectLauncher.Views.Installer
 {
@@ -7,6 +8,12 @@ namespace ProyectLauncher.Views.Installer
         public AddVersion()
         {
             InitializeComponent();
+            this.Loaded += LoadData;
+        }
+
+        private void LoadData(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }

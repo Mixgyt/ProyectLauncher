@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Avalonia;
 using CmlLib.Core.Auth;
+using ProyectLauncher.Views.Installer;
 
 namespace ProyectLauncher.Views;
 
@@ -55,18 +56,20 @@ public partial class MainView : UserControl
 
     public async void LaunchClick(object sender, RoutedEventArgs e)
     {
-        var result = await MessageBoxManager.GetMessageBoxStandard("Cancelar", "¿Desea cancelar la operacion?",ButtonEnum.YesNo,Icon.Warning).ShowAsPopupAsync(this);
-        if(result == ButtonResult.Yes)
-        { return; }
-        MLaunchOption Options = new()
-        {
-            MaximumRamMb = 2028,
-            Session = MSession.CreateOfflineSession(NameBox.Text.Trim())
-        };
-        Thread process = new(() => LaunchProcess(Options));
-        process.Name = "Launch";
-        process.IsBackground = true;
-        process.Start();
+        AddVersion n = new AddVersion();
+        n.Show();
+        /* var result = await MessageBoxManager.GetMessageBoxStandard("Cancelar", "¿Desea cancelar la operacion?",ButtonEnum.YesNo,Icon.Warning).ShowAsPopupAsync(this);
+         if(result == ButtonResult.Yes)
+         { return; }
+         MLaunchOption Options = new()
+         {
+             MaximumRamMb = 2028,
+             Session = MSession.CreateOfflineSession(NameBox.Text.Trim())
+         };
+         Thread process = new(() => LaunchProcess(Options));
+         process.Name = "Launch";
+         process.IsBackground = true;
+         process.Start();*/
 
     }
 
