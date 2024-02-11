@@ -1,30 +1,17 @@
 ﻿using CmlLib.Core;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using MsBox.Avalonia;
-using System.Threading;
-using System.Reflection;
-using System;
-using MsBox.Avalonia.Enums;
-using MsBox.Avalonia.Dto;
-using MsBox.Avalonia.Models;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using Avalonia;
+using ProyectLauncher.Classes;
 using CmlLib.Core.Auth;
 using ProyectLauncher.Views.Installer;
+using System.Linq;
 
 namespace ProyectLauncher.Views;
 
 public partial class MainView : UserControl
 {
-    MinecraftPath Path = new();
-    CMLauncher MCLauncher;
-
     public MainView()
     {
-        MCLauncher = new(Path);
 
         InitializeComponent();
         Loaded += LoadView;
@@ -32,56 +19,95 @@ public partial class MainView : UserControl
 
     public async void LoadView(object sender, RoutedEventArgs e)
     {
-        var versions = await MCLauncher.GetAllVersionsAsync();
-        foreach (var v in versions)
-        {
-            if (v.IsLocalVersion)
-            {
-                VersionsCombo.Items.Add(v.Name);
-            }
-        }
+        DisableControls();
+        await Launcher.MCLauncher.GetAllVersionsAsync();
+        EnableControls();
 
-
-        MCLauncher.FileChanged += (e) =>
+        LoadVersions();
+        Launcher.MCLauncher.FileChanged += (e) =>
         {
             LoadText.IsVisible = true;
             LoadText.Text = $"{e.FileKind} | {e.FileName}  => {e.ProgressedFileCount}/{e.TotalFileCount}";
         };
 
-        MCLauncher.ProgressChanged += (s, e) =>
+        Launcher.MCLauncher.ProgressChanged += (s, e) =>
         {
             LoadBar.Value = e.ProgressPercentage;
         };
     }
 
-    public async void LaunchClick(object sender, RoutedEventArgs e)
+    public void LoadVersions()
     {
-        AddVersion n = new AddVersion();
-        n.Show();
-        /* var result = await MessageBoxManager.GetMessageBoxStandard("Cancelar", "¿Desea cancelar la operacion?",ButtonEnum.YesNo,Icon.Warning).ShowAsPopupAsync(this);
-         if(result == ButtonResult.Yes)
-         { return; }
-         MLaunchOption Options = new()
-         {
-             MaximumRamMb = 2028,
-             Session = MSession.CreateOfflineSession(NameBox.Text.Trim())
-         };
-         Thread process = new(() => LaunchProcess(Options));
-         process.Name = "Launch";
-         process.IsBackground = true;
-         process.Start();*/
-
+        Launcher.ReloadVersions();
+        VersionsCombo.Items.Clear();
+        var versions = Launcher.MCLauncher.Versions;
+        if (versions != null && versions.Any())
+        {
+            foreach (var v in versions)
+            {
+                if (v.IsLocalVersion)
+                {
+                    VersionsCombo.Items.Add(v.Name);
+                }
+            }
+        }
     }
 
-    private void LaunchProcess(MLaunchOption Options)
+    public void LaunchClick(object sender, RoutedEventArgs e)
     {
-        var process = MCLauncher.CreateProcess($"{VersionsCombo.SelectedItem}", Options);
-        process.Start();
+        /*var result = await MessageBoxManager.GetMessageBoxStandard("Cancelar", "¿Desea cancelar la operacion?",ButtonEnum.YesNo,Icon.Warning).ShowAsPopupAsync(this);
+        if(result == ButtonResult.Yes)
+        { return; }*/
+
+        string UserName;
+        if(NameBox.Text != null)
+        {
+            UserName = NameBox.Text.Trim();
+        }
+        else
+        {
+            UserName = "username";
+        }
+
+        DisableControls();
+
+        MLaunchOption Options = new()
+        {
+            MaximumRamMb = 2028,
+            Session = MSession.CreateOfflineSession(UserName)
+        };
+
+        LaunchProcess(Options);
+        
     }
 
-    private void OpenWindow(object sender, RoutedEventArgs e)
+    public void DisableControls()
     {
-        
-        
+        InstallBt.IsEnabled = false;
+        LaunchBt.IsEnabled = false;
+        LoadersBt.IsEnabled = false;
+        VersionsCombo.IsEnabled = false;
+        NameBox.IsEnabled = false;
+        DeleteBt.IsEnabled = false;
+    }
+
+    public void EnableControls()
+    {
+        InstallBt.IsEnabled = true;
+        LaunchBt.IsEnabled = true;
+        LoadersBt.IsEnabled = true;
+        VersionsCombo.IsEnabled = true;
+        NameBox.IsEnabled = true;
+        DeleteBt.IsEnabled = true;
+    }
+
+    private async void LaunchProcess(MLaunchOption Options)
+    {
+        if(VersionsCombo.SelectedValue != null)
+        {
+            var process = await Launcher.MCLauncher.LaunchAsync($"{VersionsCombo.SelectedItem}", Options);
+            process.WaitForExit();
+        }
+        EnableControls();
     }
 }

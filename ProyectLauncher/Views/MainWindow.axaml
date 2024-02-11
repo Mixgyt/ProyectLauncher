@@ -7,5 +7,5 @@
         x:Class="ProyectLauncher.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="ProyectLauncher">
-        <views:MainView />
+        <views:MainView Name="Control"/>
 </Window>

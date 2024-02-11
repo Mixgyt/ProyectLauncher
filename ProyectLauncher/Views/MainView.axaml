@@ -5,6 +5,20 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="ProyectLauncher.Views.MainView">
   <Panel Margin="20">
+    <StackPanel VerticalAlignment="Center">
+    <Button Margin="2" Name="InstallBt" Width="75" Height="75" 
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center">Instalar</Button>
+      <Button Margin="2" Name="LoadersBt" Width="75" Height="75"
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center">Loaders</Button>
+    <Button Margin="2" Name="DeleteBt" Width="75" Height="75"
+            VerticalContentAlignment="Center"
+            HorizontalContentAlignment="Center">Eliminar</Button>
+    </StackPanel>
+    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+      <Button Width="80" Height="75" VerticalContentAlignment="Center">Opciones</Button>
+    </StackPanel>
     <StackPanel HorizontalAlignment="Center">
       <TextBlock FontSize="25" FontWeight="Bold">Minecraft Launcher</TextBlock>
       <TextBlock>by Mixgyt</TextBlock>
@@ -13,7 +27,7 @@
       
       <DockPanel Name="LauncherControls">
         <StackPanel Margin="10">
-          <TextBlock>Versiones:</TextBlock>
+          <TextBlock>Instalaciones:</TextBlock>
           <ComboBox Name="VersionsCombo"></ComboBox>
         </StackPanel>
         <StackPanel Margin="10">
@@ -26,6 +40,7 @@
             TextAlignment="Center"></TextBox>
           </StackPanel>
       </DockPanel>
+      
       <ProgressBar Margin="10" Height="25" Name="LoadBar" Minimum="0" Maximum="100" ShowProgressText="True"/>
       <TextBlock Name="LoadText" IsVisible="False"/>
       <DockPanel HorizontalAlignment="Center">
