@@ -5,6 +5,8 @@ using ProyectLauncher.Classes;
 using CmlLib.Core.Auth;
 using ProyectLauncher.Views.Installer;
 using System.Linq;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace ProyectLauncher.Views;
 
@@ -12,9 +14,9 @@ public partial class MainView : UserControl
 {
     public MainView()
     {
-
         InitializeComponent();
         Loaded += LoadView;
+        NameBox.TextChanged += SaveUserName;
     }
 
     public async void LoadView(object sender, RoutedEventArgs e)
@@ -103,11 +105,19 @@ public partial class MainView : UserControl
 
     private async void LaunchProcess(MLaunchOption Options)
     {
-        if(VersionsCombo.SelectedValue != null)
+        if(VersionsCombo.SelectedValue == null)
         {
-            var process = await Launcher.MCLauncher.LaunchAsync($"{VersionsCombo.SelectedItem}", Options);
-            process.WaitForExit();
+            await MessageBoxManager.GetMessageBoxStandard("Error", "No se selecciono ninguna version", ButtonEnum.Ok, Icon.Error,WindowStartupLocation.CenterOwner).ShowAsPopupAsync(this);
+            EnableControls();
+            return;
         }
+        var process = await Launcher.MCLauncher.LaunchAsync($"{VersionsCombo.SelectedItem}", Options);
+        process.WaitForExit();
         EnableControls();
+    }
+
+    private void SaveUserName(object? sender, RoutedEventArgs e)
+    {
+
     }
 }

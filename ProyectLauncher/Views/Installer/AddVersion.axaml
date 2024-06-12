@@ -7,11 +7,12 @@
         ExtendClientAreaToDecorationsHint="True"
         WindowStartupLocation="CenterOwner"
         CanResize="False"
+
         ShowInTaskbar="False"
         x:Class="ProyectLauncher.Views.Installer.AddVersion"
-        Title="Nueva Version">
-  
-  <StackPanel Margin="30">
+        Title="Nueva Version"><!-- ExtendClientAreaChromeHints="NoChrome" -->
+
+    <StackPanel Margin="40">
   <TextBlock HorizontalAlignment="Center" FontSize="20" FontWeight="Bold">Selecciona una version a Instalar</TextBlock>
   <RelativePanel Width="300" Height="350" Margin="20">
     <TextBlock x:Name="LblSnapShots" Padding="8">Snapshots</TextBlock>

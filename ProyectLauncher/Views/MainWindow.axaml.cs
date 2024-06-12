@@ -5,7 +5,9 @@ using MsBox.Avalonia;
 using ProyectLauncher.Classes;
 using ProyectLauncher.Views.Installer;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Avalonia;
 
 namespace ProyectLauncher.Views;
 
@@ -38,12 +40,14 @@ public partial class MainWindow : Window
         Title = "Launcher: ";
 
         #if Windows
-            Title += "Windows";
+            Title += "Windows ";
         #elif OSX
-            Title += "MacOS";
+            Title += "MacOS ";
         #elif Linux
-            Title += "Linux";
+            Title += "Linux ";
         #endif
+        var assemblyData = Process.GetCurrentProcess().MainModule.FileName;
+        Title += FileVersionInfo.GetVersionInfo(assemblyData).FileVersion.Remove(5);
     }
 
     private async void OpenInstallWindow(object sender, RoutedEventArgs e) 
