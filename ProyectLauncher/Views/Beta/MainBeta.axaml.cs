@@ -28,7 +28,7 @@ namespace ProyectLauncher.Views.Beta
                 pgr_descarga.Value = e.ProgressPercentage;
             };
             //Cargar Nombre
-            //LoadUser();
+            LoadUser();
             //Cambio en el usuario
             txt_user.TextChanged += Change_User;
         }

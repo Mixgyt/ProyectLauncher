@@ -42,13 +42,14 @@ public partial class MainWindow : Window
 
         #if Windows
             Title += "Windows ";
+            var assemblyData = Process.GetCurrentProcess().MainModule.FileName;
+            Title += FileVersionInfo.GetVersionInfo(assemblyData).FileVersion.Remove(5);
         #elif OSX
             Title += "MacOS ";
         #elif Linux
             Title += "Linux ";
         #endif
-        var assemblyData = Process.GetCurrentProcess().MainModule.FileName;
-        Title += FileVersionInfo.GetVersionInfo(assemblyData).FileVersion.Remove(5);
+        
     }
 
     /*
