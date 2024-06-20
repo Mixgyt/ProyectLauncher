@@ -1,0 +1,48 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ProyectLauncher.Views.Beta.MainBeta">
+  <Panel Margin="10">
+      <StackPanel>
+      <StackPanel Width="350">
+      <Label
+          HorizontalAlignment="Left"
+          FontSize="30"
+          FontWeight="Bold"
+          Content="Pino Launcher (Beta)"/>
+      <Label 
+          HorizontalAlignment="Left"
+          Content="by Mixgyt for We Server"/>
+      </StackPanel>
+
+      <StackPanel Width="300" Margin="20" VerticalAlignment="Center">
+          <Label>Nombre de usuario:</Label>
+          <TextBox Name="txt_user" Watermark="Usuario"/>
+          <Label Content="Minecraft:"/>
+          <ProgressBar Name="pgr_descarga"
+                        Width="300" Height="30"
+                       ShowProgressText="True"/>
+          <Label Content="Mods:"/>
+          <ProgressBar Name="pgr_mods"
+                       Width="300" Height="30"
+                       ShowProgressText="True"/>
+          <Button Name="btn_mods"
+                  Margin="10"
+                  Width="200" Height="40"
+                  VerticalContentAlignment="Center"
+                  HorizontalContentAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Content="Instalar Mods"/>
+          <Button Name="btn_launch"
+                  Margin="5"
+                  Width="200" Height="40"
+                  VerticalContentAlignment="Center"
+                  HorizontalContentAlignment="Center"
+                  HorizontalAlignment="Center"
+                  Content="Iniciar Minecraft"/>
+        </StackPanel>
+      </StackPanel>
+  </Panel>
+</UserControl>

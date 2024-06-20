@@ -9,6 +9,7 @@ using CmlLib.Core.VersionMetadata;
 using DynamicData.Kernel;
 using CmlLib.Core.Installer;
 using System.Linq;
+using CmlLib.Core.Auth;
 
 namespace ProyectLauncher.Classes
 {
@@ -21,6 +22,26 @@ namespace ProyectLauncher.Classes
         public static MVersionCollection FabricVersions = FabricLoader.GetVersionMetadatas();
 
         public static event EventHandler<Task> CompleteDownload;
+        public static event EventHandler<MLaunchOption> CloseMC;
+
+        public static void LaunchVersion(string version,string UserName = "User")
+        {
+            MLaunchOption Options = new()
+            {
+                MaximumRamMb = 2028,
+                Session = MSession.CreateOfflineSession(UserName)
+            };
+            Launch_Process(version,Options);
+        }
+
+        private static async void Launch_Process(string version,MLaunchOption Options)
+        {
+            var versionMetadata = FabricVersions.GetVersionMetadata(version);
+            await versionMetadata.SaveAsync(MCLauncher.MinecraftPath);
+            var process = await MCLauncher.LaunchAsync(version, Options);
+            process.WaitForExit();
+            OnMCClose(Options);
+        }
 
         public static async void ReloadVersions()
         {
@@ -70,6 +91,11 @@ namespace ProyectLauncher.Classes
         private static void OnDownloadComplete(Task e)
         {
             CompleteDownload?.Invoke(null, e);
+        }
+
+        private static void OnMCClose(MLaunchOption e)
+        {
+            CloseMC?.Invoke(null,e);
         }
 
     }

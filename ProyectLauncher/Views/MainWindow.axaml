@@ -3,10 +3,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:ProyectLauncher.Views"
+        xmlns:beta="clr-namespace:ProyectLauncher.Views.Beta"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         Width="800" Height="450" WindowStartupLocation="CenterScreen"
         x:Class="ProyectLauncher.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="ProyectLauncher">
-        <views:MainView Name="Control"/>
+        <beta:MainBeta Name="Control"/>
 </Window>

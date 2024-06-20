@@ -17,12 +17,13 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Loaded += LoadWindow;
+        /*
         Control.InstallBt.Click += OpenInstallWindow;
         Control.DeleteBt.Click += OpenDeleteWindow;
         Control.LoadersBt.Click += OpenLoadersWindow;
-        Launcher.CompleteDownload += CheckDownloads;
+        Launcher.CompleteDownload += CheckDownloads;*/
     }
-
+    /*
     private void CheckDownloads(object sender, Task e)
     {
         Dispatcher.UIThread.Invoke(new Action(async () =>
@@ -33,7 +34,7 @@ public partial class MainWindow : Window
                 await MessageBoxManager.GetMessageBoxStandard("Error", "Error al descargar los archivos de la version seleccionada",MsBox.Avalonia.Enums.ButtonEnum.Ok,MsBox.Avalonia.Enums.Icon.Error).ShowAsPopupAsync(this);
             }
         }));
-    }
+    }*/
 
     private void LoadWindow(object sender, RoutedEventArgs e)
     {
@@ -50,6 +51,7 @@ public partial class MainWindow : Window
         Title += FileVersionInfo.GetVersionInfo(assemblyData).FileVersion.Remove(5);
     }
 
+    /*
     private async void OpenInstallWindow(object sender, RoutedEventArgs e) 
     { 
         AddVersion addVersion = new AddVersion();
@@ -78,12 +80,12 @@ public partial class MainWindow : Window
             Control.VersionsCombo.SelectedValue = result;
         }
     }
-
+    
     private async void OpenDeleteWindow(object sender, RoutedEventArgs e)
     {
         DeleteVersion deleteVersion = new DeleteVersion();
         await deleteVersion.ShowDialog(this);
         Launcher.ReloadVersions();
         Control.LoadVersions();
-    }
+    }*/
 }

@@ -51,6 +51,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Views\Beta\MainBeta.axaml.cs">
+      <DependentUpon>MainBeta.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
