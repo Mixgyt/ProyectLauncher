@@ -22,17 +22,17 @@ public partial class MainView : UserControl
     public async void LoadView(object sender, RoutedEventArgs e)
     {
         DisableControls();
-        await Launcher.MCLauncher.GetAllVersionsAsync();
+        await Launcher.McLauncher.GetAllVersionsAsync();
         EnableControls();
 
         LoadVersions();
-        Launcher.MCLauncher.FileChanged += (e) =>
+        Launcher.McLauncher.FileChanged += (e) =>
         {
             LoadText.IsVisible = true;
             LoadText.Text = $"{e.FileKind} | {e.FileName}  => {e.ProgressedFileCount}/{e.TotalFileCount}";
         };
 
-        Launcher.MCLauncher.ProgressChanged += (s, e) =>
+        Launcher.McLauncher.ProgressChanged += (s, e) =>
         {
             LoadBar.Value = e.ProgressPercentage;
         };
@@ -42,7 +42,7 @@ public partial class MainView : UserControl
     {
         Launcher.ReloadVersions();
         VersionsCombo.Items.Clear();
-        var versions = Launcher.MCLauncher.Versions;
+        var versions = Launcher.McLauncher.Versions;
         if (versions != null && versions.Any())
         {
             foreach (var v in versions)
@@ -61,25 +61,25 @@ public partial class MainView : UserControl
         if(result == ButtonResult.Yes)
         { return; }*/
 
-        string UserName;
+        string userName;
         if(NameBox.Text != null)
         {
-            UserName = NameBox.Text.Trim();
+            userName = NameBox.Text.Trim();
         }
         else
         {
-            UserName = "username";
+            userName = "username";
         }
 
         DisableControls();
 
-        MLaunchOption Options = new()
+        MLaunchOption options = new()
         {
             MaximumRamMb = 2028,
-            Session = MSession.CreateOfflineSession(UserName)
+            Session = MSession.CreateOfflineSession(userName)
         };
 
-        LaunchProcess(Options);
+        LaunchProcess(options);
         
     }
 
@@ -103,7 +103,7 @@ public partial class MainView : UserControl
         DeleteBt.IsEnabled = true;
     }
 
-    private async void LaunchProcess(MLaunchOption Options)
+    private async void LaunchProcess(MLaunchOption options)
     {
         if(VersionsCombo.SelectedValue == null)
         {
@@ -111,7 +111,7 @@ public partial class MainView : UserControl
             EnableControls();
             return;
         }
-        var process = await Launcher.MCLauncher.LaunchAsync($"{VersionsCombo.SelectedItem}", Options);
+        var process = await Launcher.McLauncher.LaunchAsync($"{VersionsCombo.SelectedItem}", options);
         process.WaitForExit();
         EnableControls();
     }

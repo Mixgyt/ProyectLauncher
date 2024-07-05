@@ -27,7 +27,7 @@ namespace ProyectLauncher.Views.Installer
 
         private void LoadVersions(object sender, RoutedEventArgs e)
         {
-            var versions = Launcher.MCLauncher.Versions;
+            var versions = Launcher.McLauncher.Versions;
             if (versions != null && versions.Any())
             {
                 foreach (var v in versions)

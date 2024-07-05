@@ -10,7 +10,7 @@ namespace ProyectLauncher.Views.Installer
 {
     public partial class ModVersions : Window
     {
-        public string result { get; set; }
+        public string Result { get; set; }
 
         public ModVersions()
         {
@@ -42,8 +42,8 @@ namespace ProyectLauncher.Views.Installer
             if (!string.IsNullOrEmpty(version))
             {
                 var versionMetadata = Launcher.FabricVersions.GetVersionMetadata($"{version}");
-                versionMetadata.SaveAsync(Launcher.MCLauncher.MinecraftPath);
-                result = $"{version}";
+                versionMetadata.SaveAsync(Launcher.McLauncher.MinecraftPath);
+                Result = $"{version}";
                 Close();
             }
         }

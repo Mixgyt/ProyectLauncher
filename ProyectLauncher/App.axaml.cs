@@ -2,6 +2,7 @@
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using ProyectLauncher.Views;
+using Avalonia.ReactiveUI;
 
 namespace ProyectLauncher;
 

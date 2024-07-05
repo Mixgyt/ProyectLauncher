@@ -7,75 +7,97 @@ using CmlLib.Core.Installer.FabricMC;
 using System.Collections.Generic;
 using CmlLib.Core.VersionMetadata;
 using DynamicData.Kernel;
-using CmlLib.Core.Installer;
-using System.Linq;
 using CmlLib.Core.Auth;
 
 namespace ProyectLauncher.Classes
 {
     public static class Launcher
     {
-        static MinecraftPath path = new();
-        public static CMLauncher MCLauncher = new(path);
+        public static MinecraftPath _path = Settings.Instance().MCPath;
+        public static CMLauncher McLauncher = new(_path);
+        public static MLaunchOption McLauncherOptions = Settings.Instance().Options;
         public static FabricVersionLoader FabricLoader = new();
 
         public static MVersionCollection FabricVersions = FabricLoader.GetVersionMetadatas();
 
         public static event EventHandler<Task> CompleteDownload;
-        public static event EventHandler<MLaunchOption> CloseMC;
+        public static event EventHandler<MLaunchOption> CloseMc;
 
-        public static void LaunchVersion(string version,string UserName = "User")
+        public static async void LaunchVersion(string version,string userName)
         {
-            MLaunchOption Options = new()
+            McLauncherOptions.Session = MSession.CreateOfflineSession(userName);
+            if (await CheckVersion(version))
             {
-                MaximumRamMb = 2028,
-                Session = MSession.CreateOfflineSession(UserName)
-            };
-            Launch_Process(version,Options);
+                Launch_Process(version, McLauncherOptions);
+            }
+            else
+            {
+                await DownloadVersion(version);
+            }
         }
 
-        private static async void Launch_Process(string version,MLaunchOption Options)
+        private static async void Launch_Process(string version,MLaunchOption options)
         {
             var versionMetadata = FabricVersions.GetVersionMetadata(version);
-            await versionMetadata.SaveAsync(MCLauncher.MinecraftPath);
-            var process = await MCLauncher.LaunchAsync(version, Options);
+            await versionMetadata.SaveAsync(McLauncher.MinecraftPath);
+            var process = await McLauncher.LaunchAsync(version, options);
             process.WaitForExit();
-            OnMCClose(Options);
+            OnMCClose(options);
+        }
+
+        public static async Task<bool> CheckVersion(string version)
+        {
+            var versions = await McLauncher.GetAllVersionsAsync();
+            if (versions != null)
+            {
+                foreach (var colVersion in versions)
+                {
+                    if (colVersion.IsLocalVersion && colVersion.Name == version)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public static async void ReloadVersions()
         {
-            await MCLauncher.GetAllVersionsAsync();
+            await McLauncher.GetAllVersionsAsync();
         }
 
         public static async Task DownloadVersion(string sversion)
         {
-            var version = MCLauncher.GetVersion(sversion);
-            var a =  MCLauncher.CheckAndDownloadAsync(version);
+            var versionMetadata = FabricVersions.GetVersionMetadata(sversion);
+            await versionMetadata.SaveAsync(McLauncher.MinecraftPath);
+            await McLauncher.GetAllVersionsAsync();
+            var version = await McLauncher.GetVersionAsync(sversion);
+            
+            var a =  McLauncher.CheckAndDownloadAsync(version);
             await a.ContinueWith(OnDownloadComplete);
         }
 
         public static void DeleteVersion(string version)
         {
-            string MCPath = MCLauncher.MinecraftPath.ToString();
-            string VersionPath = MCPath + "\\versions\\" + version;
-            Directory.Delete(VersionPath, true);
+            string mcPath = McLauncher.MinecraftPath.ToString();
+            string versionPath = mcPath + "\\versions\\" + version;
+            Directory.Delete(versionPath, true);
         }
 
         public static List<MVersionMetadata> FabricToLocalVersions()
         {
             List<MVersionMetadata> result = new();
-            var Versions = FabricVersions.AsList();
-            var VanillaVersions = MCLauncher.Versions;
-            List<MVersionMetadata> LocalVersions ;
-            if (VanillaVersions != null)
+            var versions = FabricVersions.AsList();
+            var vanillaVersions = McLauncher.Versions;
+            List<MVersionMetadata> localVersions ;
+            if (vanillaVersions != null)
             {
-               LocalVersions = VanillaVersions.AsList().FindAll(v => v.IsLocalVersion);
-                if (LocalVersions.Count > 0)
+               localVersions = vanillaVersions.AsList().FindAll(v => v.IsLocalVersion);
+                if (localVersions.Count > 0)
                 {
-                    foreach (var version in Versions)
+                    foreach (var version in versions)
                     {
-                        foreach (var localVersion in LocalVersions)
+                        foreach (var localVersion in localVersions)
                         {
                             if (version.Name.Contains(localVersion.Name))
                             {
@@ -95,7 +117,7 @@ namespace ProyectLauncher.Classes
 
         private static void OnMCClose(MLaunchOption e)
         {
-            CloseMC?.Invoke(null,e);
+            CloseMc?.Invoke(null,e);
         }
 
     }

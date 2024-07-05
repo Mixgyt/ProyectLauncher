@@ -19,7 +19,7 @@ namespace ProyectLauncher.Views.Installer
 
         private void LoadData(object sender, RoutedEventArgs e)
         {
-            var versions = Launcher.MCLauncher.Versions;
+            var versions = Launcher.McLauncher.Versions;
             bool snapshots = SnapshotsCheck.IsChecked.Value;
             ListVersion.Items.Clear();
             if (versions != null && versions.Count() > 0)

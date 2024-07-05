@@ -6,8 +6,10 @@ using ProyectLauncher.Classes;
 using ProyectLauncher.Views.Installer;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Avalonia;
+using CmlLib.Core;
 
 namespace ProyectLauncher.Views;
 
@@ -17,6 +19,9 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         Loaded += LoadWindow;
+        Control.btn_launch.Click += Launch_btn;
+
+        Launcher.CloseMc += Reinvoke_Window;
         /*
         Control.InstallBt.Click += OpenInstallWindow;
         Control.DeleteBt.Click += OpenDeleteWindow;
@@ -36,20 +41,38 @@ public partial class MainWindow : Window
         }));
     }*/
 
+    private void Reinvoke_Window(object sender, MLaunchOption e)
+    {
+        Show();
+    }
+
+    private async void Launch_btn(object? sender, RoutedEventArgs e)
+    {
+        
+        if (await Launcher.CheckVersion("fabric-loader-0.15.11-1.19.2") && Settings.Instance().CloseLauncher)
+        {
+            Hide();
+        }
+    }
+
     private void LoadWindow(object sender, RoutedEventArgs e)
     {
-        Title = "Launcher: ";
+        Title = "Pino Launcher: ";
 
-        #if Windows
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
             Title += "Windows ";
             var assemblyData = Process.GetCurrentProcess().MainModule.FileName;
             Title += FileVersionInfo.GetVersionInfo(assemblyData).FileVersion.Remove(5);
-        #elif OSX
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
             Title += "MacOS ";
-        #elif Linux
+        }
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+        {
             Title += "Linux ";
-        #endif
-        
+        }
     }
 
     /*

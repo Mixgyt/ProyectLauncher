@@ -2,9 +2,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:u="clr-namespace:ProyectLauncher.Views.Beta"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="500"
              x:Class="ProyectLauncher.Views.Beta.MainBeta">
   <Panel Margin="10">
+    <!--Sometido a cambios interfaz temporal-->
+    <DockPanel HorizontalAlignment="Right">
+        <!--<u:OptionsSection/>-->
+        
+    </DockPanel>
       <StackPanel>
       <StackPanel Width="350">
       <Label
@@ -12,23 +18,28 @@
           FontSize="30"
           FontWeight="Bold"
           Content="Pino Launcher (Beta)"/>
+      
       <Label 
+          Name="lbl_subtitle"
           HorizontalAlignment="Left"
           Content="by Mixgyt for We Server"/>
       </StackPanel>
-
-      <StackPanel Width="300" Margin="20" VerticalAlignment="Center">
+        <u:ServerStatus Margin="5" Height="100" CornerRadius="10" HorizontalAlignment="Center"/>
+      <StackPanel Width="300" Margin="3" VerticalAlignment="Center">
           <Label>Nombre de usuario:</Label>
           <TextBox Name="txt_user" Watermark="Usuario"/>
           <Label Content="Minecraft:"/>
           <ProgressBar Name="pgr_descarga"
                         Width="300" Height="30"
                        ShowProgressText="True"/>
-          <Label Content="Mods:"/>
+          <Label Name="lbl_files"
+                 IsEnabled="False"/>
+          <Label Name="lbl_mods" Content="Mods Instalados:" />
           <ProgressBar Name="pgr_mods"
                        Width="300" Height="30"
                        ShowProgressText="True"/>
           <Button Name="btn_mods"
+                  IsEnabled="True"
                   Margin="10"
                   Width="200" Height="40"
                   VerticalContentAlignment="Center"
@@ -44,5 +55,8 @@
                   Content="Iniciar Minecraft"/>
         </StackPanel>
       </StackPanel>
+    <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center">
+        <u:OptionsSection Name="BtnOptions"/>
+    </StackPanel>
   </Panel>
 </UserControl>
