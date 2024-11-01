@@ -22,14 +22,14 @@ public partial class MainWindow : Window
         Control.btn_launch.Click += Launch_btn;
 
         Launcher.CloseMc += Reinvoke_Window;
-        /*
-        Control.InstallBt.Click += OpenInstallWindow;
+        
+        /*Control.InstallBt.Click += OpenInstallWindow;
         Control.DeleteBt.Click += OpenDeleteWindow;
         Control.LoadersBt.Click += OpenLoadersWindow;
         Launcher.CompleteDownload += CheckDownloads;*/
     }
-    /*
-    private void CheckDownloads(object sender, Task e)
+    
+    /*private void CheckDownloads(object sender, Task e)
     {
         Dispatcher.UIThread.Invoke(new Action(async () =>
         {
@@ -95,7 +95,7 @@ public partial class MainWindow : Window
     {
         ModVersions modVersions = new ModVersions();
         await modVersions.ShowDialog(this);
-        var result = modVersions.result;
+        var result = modVersions.Result;
 
         if(!string.IsNullOrEmpty(result))
         {

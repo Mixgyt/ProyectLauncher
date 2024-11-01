@@ -38,8 +38,7 @@ namespace ProyectLauncher.Classes
 
         private static async void Launch_Process(string version,MLaunchOption options)
         {
-            var versionMetadata = FabricVersions.GetVersionMetadata(version);
-            await versionMetadata.SaveAsync(McLauncher.MinecraftPath);
+            await CheckVersion(version);
             var process = await McLauncher.LaunchAsync(version, options);
             process.WaitForExit();
             OnMCClose(options);

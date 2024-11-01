@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Pino Launcher"
-!define PRODUCT_VERSION "0.7.0"
+!define PRODUCT_VERSION "0.7.1"
 !define PRODUCT_PUBLISHER "Mix Dev Studios"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Launcher.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"

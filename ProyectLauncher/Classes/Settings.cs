@@ -21,7 +21,7 @@ namespace ProyectLauncher.Classes
         public string ModsPath { get; set; }
         public MLaunchOption Options { get; set; }
         private static string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData","Roaming","PinoLauncher","settings.json");
-        private static string LauncherVersion = "0.7";
+        private static string LauncherVersion = "0.7.1";
 
         public Settings()
         {
