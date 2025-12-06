@@ -1,0 +1,228 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:PinoLauncher.ViewModels"
+        xmlns:lucide="https://github.com/AvaloniaUI/Lucide.Avalonia"
+        x:Class="PinoLauncher.Views.SettingsWindow"
+        x:DataType="vm:SettingsViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Configuración - PinoLauncher"
+        Width="600" Height="700"
+        MinWidth="550" MinHeight="650"
+        CanResize="true"
+        WindowStartupLocation="CenterOwner">
+
+  <Design.DataContext>
+    <vm:SettingsViewModel />
+  </Design.DataContext>
+
+  <Grid Margin="20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+
+    <!-- Título -->
+    <StackPanel Grid.Row="0" 
+                Orientation="Horizontal" 
+                HorizontalAlignment="Center" 
+                Margin="0,0,0,30">
+      <LucideIcon Kind="Settings" StrokeWidth="2" Size="28" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+      <TextBlock Text="Configuración del Launcher"
+                 FontSize="24"
+                 FontWeight="Bold"
+                 VerticalAlignment="Center"
+                 Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+    </StackPanel>
+
+    <!-- Panel principal de configuración -->
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+      <StackPanel Spacing="30">
+
+        <!-- Sección de RAM -->
+        <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20">
+          <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+              <LucideIcon Kind="Brain" StrokeWidth="2" Size="20" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+              <TextBlock Text="Configuración de Memoria RAM"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            </StackPanel>
+            
+            <TextBlock Text="Selecciona la cantidad de RAM para Minecraft:"
+                       Margin="0,0,0,10"
+                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            
+            <ComboBox ItemsSource="{Binding AvailableRamOptions}"
+                      SelectedItem="{Binding SelectedRamOption}"
+                      DisplayMemberBinding="{Binding DisplayName}"
+                      Width="200"
+                      HorizontalAlignment="Left"
+                      Margin="0,0,0,10"/>
+            
+            <TextBlock Text="{Binding MemoryStatusText}"
+                       FontSize="12"
+                       FontStyle="Italic"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Sección de Tema -->
+        <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20">
+          <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+              <LucideIcon Kind="Palette" StrokeWidth="2" Size="20" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+              <TextBlock Text="Configuración de Tema"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            </StackPanel>
+            
+            <TextBlock Text="Selecciona el tema de la interfaz:"
+                       Margin="0,0,0,10"
+                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            
+            <ComboBox ItemsSource="{Binding ThemeManager.AvailableThemes}"
+                      SelectedItem="{Binding ThemeManager.SelectedTheme}"
+                      DisplayMemberBinding="{Binding DisplayName}"
+                      Width="200"
+                      HorizontalAlignment="Left"
+                      Margin="0,0,0,10"/>
+            
+            <TextBlock Text="{Binding ThemeManager.CurrentThemeStatus}"
+                       FontSize="12"
+                       FontStyle="Italic"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Sección de Pantalla Completa -->
+        <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20">
+          <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+              <LucideIcon Kind="Monitor" StrokeWidth="2" Size="20" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+              <TextBlock Text="Configuración de Pantalla"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            </StackPanel>
+            
+            <CheckBox IsChecked="{Binding FullscreenMode}"
+                      Content="Iniciar Minecraft en pantalla completa"
+                      Margin="0,0,0,10"
+                      Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            
+            <TextBlock Text="Esta opción hará que Minecraft se inicie directamente en modo pantalla completa"
+                       FontSize="12"
+                       FontStyle="Italic"
+                       TextWrapping="Wrap"
+                       Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+          </StackPanel>
+        </Border>
+
+        <!-- Sección de Carpetas -->
+        <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}"
+                BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="20">
+          <StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+              <LucideIcon Kind="FolderOpen" StrokeWidth="2" Size="20" Margin="0,0,8,0" VerticalAlignment="Center" Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+              <TextBlock Text="Gestión de Archivos"
+                         FontSize="18"
+                         FontWeight="SemiBold"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            </StackPanel>
+            
+            <TextBlock Text="Ruta de Minecraft:"
+                       Margin="0,0,0,5"
+                       Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            
+            <TextBox Text="{Binding MinecraftPath}"
+                     IsReadOnly="True"
+                     Margin="0,0,0,15"
+                     Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+                     Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"/>
+            
+            <Button Command="{Binding OpenMinecraftFolderCommand}"
+                    HorizontalAlignment="Left"
+                    Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                    Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}"
+                    Padding="15,8">
+              <StackPanel Orientation="Horizontal">
+                <LucideIcon Kind="ExternalLink" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Abrir Carpeta de Minecraft" VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button>
+          </StackPanel>
+        </Border>
+
+      </StackPanel>
+    </ScrollViewer>
+
+    <!-- Botones de acción -->
+    <Grid Grid.Row="2" Margin="0,20,0,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="10"/>
+        <ColumnDefinition Width="Auto"/>
+        <ColumnDefinition Width="10"/>
+        <ColumnDefinition Width="Auto"/>
+      </Grid.ColumnDefinitions>
+
+      <Button Grid.Column="1"
+              Command="{Binding ResetToDefaultsCommand}"
+              Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+              Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+              Padding="15,8">
+        <StackPanel Orientation="Horizontal">
+          <LucideIcon Kind="RotateCcw" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+          <TextBlock Text="Restaurar Defaults" VerticalAlignment="Center"/>
+        </StackPanel>
+      </Button>
+
+      <Button Grid.Column="3"
+              Command="{Binding ApplySettingsCommand}"
+              Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+              Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}"
+              FontWeight="SemiBold"
+              Padding="20,8">
+        <StackPanel Orientation="Horizontal">
+          <LucideIcon Kind="Check" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+          <TextBlock Text="Aplicar y Cerrar" VerticalAlignment="Center"/>
+        </StackPanel>
+      </Button>
+
+      <Button Grid.Column="5"
+              Click="OnCancelClick"
+              Background="{DynamicResource SystemControlBackgroundBaseMediumBrush}"
+              Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+              Padding="15,8">
+        <StackPanel Orientation="Horizontal">
+          <LucideIcon Kind="X" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+          <TextBlock Text="Cancelar" VerticalAlignment="Center"/>
+        </StackPanel>
+      </Button>
+    </Grid>
+
+  </Grid>
+</Window>

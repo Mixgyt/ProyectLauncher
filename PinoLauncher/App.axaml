@@ -1,0 +1,42 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:PinoLauncher"
+             x:Class="PinoLauncher.App"
+             RequestedThemeVariant="Default">
+             <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+    <Application.DataTemplates>
+        <local:ViewLocator/>
+    </Application.DataTemplates>
+
+    <Application.Styles>
+        <FluentTheme />
+        
+        <!-- Recursos de colores personalizados -->
+        <Style>
+            <Style.Resources>
+                <!-- Colores base que se adaptan automáticamente al tema del sistema -->
+                <SolidColorBrush x:Key="PrimaryBrush" Color="{DynamicResource SystemAccentColor}" />
+                <SolidColorBrush x:Key="AccentBrush" Color="{DynamicResource SystemAccentColorLight1}" />
+                <SolidColorBrush x:Key="ModLoaderBrush" Color="{DynamicResource SystemAccentColorLight2}" />
+                <SolidColorBrush x:Key="PanelBrush" Color="{DynamicResource SystemControlBackgroundAltMediumLowBrush}" />
+                <SolidColorBrush x:Key="SecondaryPanelBrush" Color="{DynamicResource SystemControlBackgroundAltHighBrush}" />
+                <SolidColorBrush x:Key="ProgressBrush" Color="{DynamicResource SystemControlBackgroundBaseLowBrush}" />
+                <SolidColorBrush x:Key="TextSecondaryBrush" Color="{DynamicResource SystemBaseMediumLowColor}" />
+                <SolidColorBrush x:Key="BorderBrush" Color="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" />
+            </Style.Resources>
+        </Style>
+        
+        <!-- Colores personalizados para tema claro específico -->
+        <Style Selector=":is(Application)">
+            <Style.Resources>
+                <SolidColorBrush x:Key="CustomPrimaryBrush" Color="#2E8B57" />
+                <SolidColorBrush x:Key="CustomAccentBrush" Color="#4CAF50" />
+                <SolidColorBrush x:Key="CustomModLoaderBrush" Color="#8A2BE2" />
+                <SolidColorBrush x:Key="ButtonHoverBrush" Color="#45a049" />
+                <SolidColorBrush x:Key="DisabledButtonBrush" Color="#cccccc" />
+                <SolidColorBrush x:Key="DisabledTextBrush" Color="#666666" />
+            </Style.Resources>
+        </Style>
+    </Application.Styles>
+</Application>

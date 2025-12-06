@@ -1,0 +1,274 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:PinoLauncher.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+             x:Class="PinoLauncher.Views.MainView"
+             x:DataType="vm:MainViewModel">
+  <Design.DataContext>
+    <vm:MainViewModel />
+  </Design.DataContext>
+
+  <Grid Margin="20">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
+
+    <!-- Título -->
+    <StackPanel Grid.Row="0" 
+                Orientation="Horizontal" 
+                HorizontalAlignment="Center" 
+                Margin="0,0,0,20">
+      <LucideIcon Kind="TreePine" StrokeWidth="2" Foreground="{DynamicResource CustomPrimaryBrush}" Size="24" Margin="0,0,5,0" VerticalAlignment="Center"/>
+      <TextBlock Text="Pino Launcher" 
+                 FontSize="24" 
+                 FontWeight="Bold" 
+                 VerticalAlignment="Center"
+                 Foreground="{DynamicResource CustomPrimaryBrush}"/>
+    </StackPanel>
+
+    <!-- Panel de configuración -->
+    <Border Grid.Row="1" 
+            Background="{DynamicResource SystemControlBackgroundAltMediumBrush}" 
+            CornerRadius="8" 
+            Padding="15" 
+            Margin="0,0,0,15">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Nombre de usuario -->
+        <TextBlock Grid.Row="0" Grid.Column="0" 
+                   Text="Nombre de usuario:" 
+                   VerticalAlignment="Center" 
+                   Margin="0,0,10,5"
+                   FontWeight="SemiBold"/>
+        <TextBox Grid.Row="1" Grid.Column="0" 
+                 Text="{Binding Username}" 
+                 Watermark="Ingresa tu nombre de usuario"
+                 Margin="0,0,10,15"/>
+
+        <!-- Versión de Minecraft -->
+        <TextBlock Grid.Row="0" Grid.Column="1" 
+                   Text="Versión de Minecraft:" 
+                   VerticalAlignment="Center" 
+                   Margin="5,0,5,5"
+                   FontWeight="SemiBold"/>
+        <ComboBox Grid.Row="1" Grid.Column="1" 
+                  ItemsSource="{Binding AvailableVersions}"
+                  SelectedItem="{Binding SelectedVersion}"
+                  Margin="5,0,5,15"
+                  PlaceholderText="Selecciona una versión"/>
+
+        <!-- Estado de configuración -->
+        <TextBlock Grid.Row="0" Grid.Column="2" 
+                   Text="Estado de RAM:" 
+                   VerticalAlignment="Center" 
+                   Margin="5,0,5,5"
+                   FontWeight="SemiBold"/>
+        <TextBlock Grid.Row="1" Grid.Column="2" 
+                   Text="{Binding MemoryStatusText}"
+                   VerticalAlignment="Center"
+                   Margin="5,0,5,15"
+                   FontStyle="Italic"
+                   Foreground="{DynamicResource SystemControlForegroundBaseMediumBrush}"/>
+
+        <!-- Botón de configuración -->
+        <TextBlock Grid.Row="0" Grid.Column="3" 
+                   Text="Configuración:" 
+                   VerticalAlignment="Center" 
+                   Margin="10,0,0,5"
+                   FontWeight="SemiBold"/>
+        <Button Grid.Row="1" Grid.Column="3" 
+                Command="{Binding OpenSettingsCommand}"
+                Margin="10,0,0,15"
+                Padding="10,5"
+                Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                Foreground="{DynamicResource SystemControlForegroundChromeWhiteBrush}"
+                CornerRadius="5">
+          <StackPanel Orientation="Horizontal">
+            <LucideIcon Kind="Settings" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+            <TextBlock Text="Configuración Avanzada" 
+                       VerticalAlignment="Center"/>
+          </StackPanel>
+        </Button>
+
+        <!-- Botones de utilidad -->
+        <StackPanel Grid.Row="2" Grid.ColumnSpan="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+          <Button Command="{Binding OpenModLoaderConfigCommand}"
+                  IsEnabled="{Binding IsModLoaderButtonEnabled}"
+                  Margin="0,0,10,0"
+                  Padding="10,5"
+                  Background="{DynamicResource CustomModLoaderBrush}"
+                  Foreground="White"
+                  CornerRadius="5">
+            <StackPanel Orientation="Horizontal">
+              <LucideIcon Kind="Cog" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+              <TextBlock Text="Mod Loaders" 
+                         VerticalAlignment="Center"/>
+            </StackPanel>
+          </Button>
+          
+          <!-- Botón de descarga de mods (solo visible con ChafaServer) -->
+          <Button Command="{Binding DownloadModsFromSupabaseCommand}"
+                  IsVisible="{Binding IsDownloadModsButtonVisible}"
+                  IsEnabled="{Binding !IsDownloadingMods}"
+                  Margin="0,0,10,0"
+                  Padding="10,5"
+                  Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                  Foreground="White"
+                  CornerRadius="5">
+            <StackPanel Orientation="Horizontal">
+              <LucideIcon Kind="Download" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+              <TextBlock Text="Descargar Mods" 
+                         VerticalAlignment="Center"/>
+            </StackPanel>
+          </Button>
+          
+          <Button Command="{Binding OpenMinecraftFolderCommand}"
+                  Margin="0,0,10,0"
+                  Padding="10,5">
+            <StackPanel Orientation="Horizontal">
+              <LucideIcon Kind="Folder" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+              <TextBlock Text="Abrir carpeta .minecraft" 
+                         VerticalAlignment="Center"/>
+            </StackPanel>
+          </Button>
+          <Button Command="{Binding ClearLogsCommand}"
+                  Padding="10,5">
+            <StackPanel Orientation="Horizontal">
+              <LucideIcon Kind="Trash" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+              <TextBlock Text="Limpiar logs" 
+                         VerticalAlignment="Center"/>
+            </StackPanel>
+          </Button>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- Barra de progreso -->
+    <Border Grid.Row="2" 
+            Background="{DynamicResource SystemControlBackgroundBaseLowBrush}" 
+            CornerRadius="8" 
+            Padding="15" 
+            Margin="0,0,0,15">
+      <StackPanel>
+        <TextBlock Text="{Binding ProgressText}" 
+                   FontWeight="SemiBold"
+                   Margin="0,0,0,8"/>
+        <ProgressBar Value="{Binding ProgressValue}" 
+                     Maximum="100" 
+                     Height="20"
+                     Foreground="{DynamicResource CustomAccentBrush}"/>
+      </StackPanel>
+    </Border>
+
+    <!-- Botón de lanzamiento -->
+    <Button Grid.Row="3" 
+            Command="{Binding LaunchMinecraftCommand}"
+            IsEnabled="{Binding !IsLaunching}"
+            FontSize="18" 
+            FontWeight="Bold"
+            Padding="20,15"
+            HorizontalAlignment="Center"
+            Background="{DynamicResource CustomAccentBrush}"
+            Foreground="White"
+            CornerRadius="25"
+            Margin="0,0,0,20">
+      <StackPanel Orientation="Horizontal">
+        <LucideIcon Kind="Play" StrokeWidth="2" />
+        <TextBlock Text=" LANZAR MINECRAFT" 
+                   VerticalAlignment="Center"/>
+      </StackPanel>
+      <Button.Styles>
+        <Style Selector="Button:pointerover">
+          <Setter Property="Background" Value="{DynamicResource ButtonHoverBrush}"/>
+        </Style>
+        <Style Selector="Button:disabled">
+          <Setter Property="Background" Value="{DynamicResource DisabledButtonBrush}"/>
+          <Setter Property="Foreground" Value="{DynamicResource DisabledTextBrush}"/>
+        </Style>
+      </Button.Styles>
+    </Button>
+
+    <!-- Estado del lanzamiento -->
+    <StackPanel Grid.Row="4" 
+                HorizontalAlignment="Center"
+                Orientation="Horizontal"
+                Margin="0,0,0,15">
+      <TextBlock Text="{Binding StatusMessage}"
+                 FontStyle="Italic"
+                 Foreground="{DynamicResource SystemBaseMediumBrush}"
+                 Margin="0,0,15,0"/>
+      <StackPanel Orientation="Horizontal" Margin="0,0,15,0">
+        <TextBlock Text="{Binding MemoryStatusText}"
+                   FontStyle="Italic"
+                   Foreground="{DynamicResource CustomAccentBrush}"
+                   FontWeight="SemiBold"/>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal">
+         
+        <LucideIcon Kind="Wrench" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding ModLoaderStatusText}"
+                   FontStyle="Italic"
+                   Foreground="{DynamicResource CustomModLoaderBrush}"
+                   FontWeight="SemiBold"/>
+      </StackPanel>
+    </StackPanel>
+
+    <!-- Log de actividad -->
+    <Border Grid.Row="5" 
+            Background="{DynamicResource SystemControlBackgroundAltHighBrush}" 
+            CornerRadius="8" 
+            BorderBrush="{DynamicResource SystemControlForegroundBaseMediumBrush}" 
+            BorderThickness="1">
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto"/>
+          <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" 
+                    Orientation="Horizontal" 
+                    Margin="15,10,15,5">
+          <LucideIcon Kind="Terminal" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+          <TextBlock Text="Log de actividad" 
+                     FontWeight="Bold" 
+                     VerticalAlignment="Center"/>
+        </StackPanel>
+        
+        <ScrollViewer Grid.Row="1" 
+                      Margin="15,5,15,15"
+                      VerticalScrollBarVisibility="Auto"
+                      Name="LogScrollViewer">
+          <TextBox Text="{Binding LogText}" 
+                   IsReadOnly="True"
+                   TextWrapping="Wrap"
+                   FontFamily="Consolas, monospace"
+                   FontSize="11"
+                   Background="Transparent"
+                   BorderThickness="0"
+                   MinHeight="150"
+                   Name="LogTextBox"/>
+        </ScrollViewer>
+      </Grid>
+    </Border>
+  </Grid>
+</UserControl>
