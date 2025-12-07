@@ -4,7 +4,7 @@
         xmlns:lucide="https://github.com/AvaloniaUI/Lucide.Avalonia"
         x:Class="PinoLauncher.Views.SettingsWindow"
         x:DataType="vm:SettingsViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/pino.ico"
         Title="Configuración - PinoLauncher"
         Width="600" Height="700"
         MinWidth="550" MinHeight="650"

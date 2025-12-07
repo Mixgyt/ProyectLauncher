@@ -104,6 +104,9 @@ public partial class MainViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isDownloadingMods = false;
     
+    [ObservableProperty]
+    private bool _isCleaningMods = false;
+    
     private List<string> _availableModsFromSupabase = new();
 
     // Propiedades para configuración de mod loaders
@@ -600,6 +603,101 @@ public partial class MainViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private async Task CleanAndRedownloadModsAsync()
+    {
+        if (IsCleaningMods || IsDownloadingMods || !_availableModsFromSupabase.Any())
+            return;
+
+        try
+        {
+            IsCleaningMods = true;
+            AddLog("[SUPABASE] Iniciando limpieza y redescarga de mods...");
+            
+            var modsFolder = Path.Combine(_minecraftPath.BasePath, "mods");
+            
+            if (Directory.Exists(modsFolder))
+            {
+                // Obtener todos los archivos .jar en la carpeta de mods
+                var allModFiles = Directory.GetFiles(modsFolder, "*.jar");
+                
+                // Separar mods que están en Supabase y los que no
+                var supabaseMods = new List<string>();
+                var orphanedMods = new List<string>();
+                
+                foreach (var modFile in allModFiles)
+                {
+                    var fileName = Path.GetFileName(modFile);
+                    if (_availableModsFromSupabase.Contains(fileName))
+                    {
+                        supabaseMods.Add(modFile);
+                    }
+                    else
+                    {
+                        orphanedMods.Add(modFile);
+                    }
+                }
+                
+                // Eliminar mods huérfanos (que no están en Supabase)
+                if (orphanedMods.Any())
+                {
+                    AddLog($"[SUPABASE] Eliminando {orphanedMods.Count} mod(s) que no están en el servidor...");
+                    foreach (var orphanedMod in orphanedMods)
+                    {
+                        try
+                        {
+                            File.Delete(orphanedMod);
+                            AddLog($"[SUPABASE] ✓ Eliminado: {Path.GetFileName(orphanedMod)}");
+                        }
+                        catch (Exception ex)
+                        {
+                            AddLog($"[SUPABASE ERROR] No se pudo eliminar {Path.GetFileName(orphanedMod)}: {ex.Message}");
+                        }
+                    }
+                }
+                
+                // Eliminar mods de Supabase para redescargar
+                if (supabaseMods.Any())
+                {
+                    AddLog($"[SUPABASE] Eliminando {supabaseMods.Count} mod(s) para redescarga...");
+                    foreach (var supabaseMod in supabaseMods)
+                    {
+                        try
+                        {
+                            File.Delete(supabaseMod);
+                            AddLog($"[SUPABASE] ✓ Eliminado para redescarga: {Path.GetFileName(supabaseMod)}");
+                        }
+                        catch (Exception ex)
+                        {
+                            AddLog($"[SUPABASE ERROR] No se pudo eliminar {Path.GetFileName(supabaseMod)}: {ex.Message}");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(modsFolder);
+                AddLog($"[SUPABASE] Creada carpeta de mods: {modsFolder}");
+            }
+            
+            AddLog("[SUPABASE] Limpieza completada. Iniciando redescarga...");
+            
+            // Descargar todos los mods de nuevo
+            await DownloadAllModsFromSupabaseAsync();
+            
+            AddLog("[SUPABASE] ✓ Limpieza y redescarga completada exitosamente");
+        }
+        catch (Exception ex)
+        {
+            AddLog($"[SUPABASE ERROR] Error durante limpieza: {ex.Message}");
+        }
+        finally
+        {
+            IsCleaningMods = false;
+            CheckAndUpdateDownloadButtonVisibility();
+        }
+    }
+    
+    [RelayCommand]
     private async Task DownloadModsFromSupabaseAsync()
     {
         if (IsDownloadingMods || !_availableModsFromSupabase.Any())
@@ -684,6 +782,54 @@ public partial class MainViewModel : ViewModelBase
         }
     }
     
+    private async Task DownloadAllModsFromSupabaseAsync()
+    {
+        if (!_availableModsFromSupabase.Any())
+            return;
+
+        var modsFolder = Path.Combine(_minecraftPath.BasePath, "mods");
+        var client = SupabaseService.GetClient();
+        var storage = client.Storage;
+        var bucket = storage.From("mods");
+        
+        int downloadedCount = 0;
+        int totalCount = _availableModsFromSupabase.Count;
+        
+        foreach (var modFileName in _availableModsFromSupabase)
+        {
+            try
+            {
+                var localFilePath = Path.Combine(modsFolder, modFileName);
+                
+                if (modFileName == ".emptyFolderPlaceholder")
+                {
+                    continue;
+                }
+                
+                AddLog($"[SUPABASE] • Descargando {modFileName}...");
+                
+                var fileBytes = await bucket.Download(modFileName, null);
+                
+                if (fileBytes != null && fileBytes.Length > 0)
+                {
+                    await File.WriteAllBytesAsync(localFilePath, fileBytes);
+                    downloadedCount++;
+                    AddLog($"[SUPABASE] ✓ {modFileName} descargado ({fileBytes.Length / 1024:F1} KB)");
+                }
+                else
+                {
+                    AddLog($"[SUPABASE] ✗ Error: {modFileName} está vacío o no se pudo descargar");
+                }
+            }
+            catch (Exception modEx)
+            {
+                AddLog($"[SUPABASE ERROR] Error descargando {modFileName}: {modEx.Message}");
+            }
+        }
+        
+        AddLog($"[SUPABASE] Descarga completada: {downloadedCount}/{totalCount} mods descargados");
+    }
+    
     private void CheckAndUpdateDownloadButtonVisibility()
     {
         if (!_availableModsFromSupabase.Any())
@@ -699,6 +845,39 @@ public partial class MainViewModel : ViewModelBase
             return;
         }
         
+        // Verificar mods faltantes y eliminar huérfanos
+        var allModFiles = Directory.GetFiles(modsFolder, "*.jar");
+        var orphanedMods = new List<string>();
+        
+        // Identificar mods huérfanos (que no están en Supabase)
+        foreach (var modFile in allModFiles)
+        {
+            var fileName = Path.GetFileName(modFile);
+            if (!_availableModsFromSupabase.Contains(fileName))
+            {
+                orphanedMods.Add(modFile);
+            }
+        }
+        
+        // Eliminar mods huérfanos silenciosamente
+        if (orphanedMods.Any())
+        {
+            AddLog($"[SUPABASE] Eliminando {orphanedMods.Count} mod(s) obsoleto(s)...");
+            foreach (var orphanedMod in orphanedMods)
+            {
+                try
+                {
+                    File.Delete(orphanedMod);
+                    AddLog($"[SUPABASE] ✓ Eliminado mod obsoleto: {Path.GetFileName(orphanedMod)}");
+                }
+                catch (Exception ex)
+                {
+                    AddLog($"[SUPABASE ERROR] No se pudo eliminar {Path.GetFileName(orphanedMod)}: {ex.Message}");
+                }
+            }
+        }
+        
+        // Verificar mods faltantes
         int modsAlreadyDownloaded = 0;
         foreach (var modName in _availableModsFromSupabase)
         {
@@ -714,7 +893,7 @@ public partial class MainViewModel : ViewModelBase
         
         if (!IsDownloadModsButtonVisible)
         {
-            AddLog("[SUPABASE] Todos los mods están descargados - botón ocultado");
+            AddLog("[SUPABASE] Todos los mods están actualizados - botón ocultado");
         }
     }
     
@@ -837,44 +1016,94 @@ public partial class MainViewModel : ViewModelBase
     {
         try
         {
+            // Verificar si es la primera vez que se ejecuta la aplicación
+            // Si el archivo de configuración no existe, significa que es primera ejecución
+            var settingsFilePath = SettingsService.GetSettingsPath();
+            bool isFirstRun = !File.Exists(settingsFilePath);
             var settings = await SettingsService.LoadSettingsAsync();
             
-            // Aplicar configuraciones cargadas
-            Username = settings.Username;
-            FullscreenMode = settings.FullscreenMode;
-            ModLoaderEnabled = settings.ModLoaderEnabled;
-            SelectedModLoaderName = settings.SelectedModLoaderName;
-            SelectedModLoaderVersion = settings.SelectedModLoaderVersion;
-            
-            // Aplicar versión seleccionada si está disponible en la lista
-            if (!string.IsNullOrEmpty(settings.SelectedVersion) && AvailableVersions.Contains(settings.SelectedVersion))
+            if (isFirstRun)
             {
-                SelectedVersion = settings.SelectedVersion;
-            }
-            
-            // Aplicar configuración de RAM si la opción existe
-            if (settings.RamMb > 0)
-            {
-                var ramOption = AvailableRamOptions.FirstOrDefault(x => x.ValueMb == settings.RamMb);
-                if (ramOption != null)
+                AddLog("[PRIMERA EJECUCIÓN] Configurando ChafaServer por defecto...");
+                
+                // Configuración por defecto para primera ejecución
+                Username = "Player";
+                SelectedVersion = "ChafaServer";
+                FullscreenMode = false;
+                ModLoaderEnabled = true;
+                SelectedModLoaderName = "Fabric";
+                SelectedModLoaderVersion = "0.16.10";
+                
+                // Establecer versión actual para ChafaServer
+                ActualMinecraftVersion = "1.21.1";
+                
+                // Aplicar tema por defecto
+                var defaultTheme = ThemeManager.AvailableThemes.FirstOrDefault(x => x.Name == "Default");
+                if (defaultTheme != null)
                 {
-                    SelectedRamOption = ramOption;
+                    ThemeManager.SelectedTheme = defaultTheme;
                 }
+                
+                AddLog("[PRIMERA EJECUCIÓN] ✓ ChafaServer configurado automáticamente");
+                AddLog("[PRIMERA EJECUCIÓN] ✓ Fabric 0.16.10 habilitado para Minecraft 1.21.1");
+                
+                // Inicializar Supabase para ChafaServer
+                _ = InitializeSupabaseAsync();
+                
+                // Guardar configuración inicial
+                await SaveSettingsAsync();
+                AddLog("[PRIMERA EJECUCIÓN] Configuración guardada");
             }
-            
-            // Aplicar tema
-            if (!string.IsNullOrEmpty(settings.ThemeName))
+            else
             {
-                var theme = ThemeManager.AvailableThemes.FirstOrDefault(x => x.Name == settings.ThemeName);
-                if (theme != null)
+                // Aplicar configuraciones cargadas (ejecución normal)
+                Username = settings.Username;
+                FullscreenMode = settings.FullscreenMode;
+                ModLoaderEnabled = settings.ModLoaderEnabled;
+                SelectedModLoaderName = settings.SelectedModLoaderName;
+                SelectedModLoaderVersion = settings.SelectedModLoaderVersion;
+                
+                // Aplicar versión seleccionada si está disponible en la lista
+                if (!string.IsNullOrEmpty(settings.SelectedVersion) && AvailableVersions.Contains(settings.SelectedVersion))
                 {
-                    ThemeManager.SelectedTheme = theme;
+                    SelectedVersion = settings.SelectedVersion;
+                }
+                
+                // Aplicar configuración de RAM si la opción existe
+                if (settings.RamMb > 0)
+                {
+                    var ramOption = AvailableRamOptions.FirstOrDefault(x => x.ValueMb == settings.RamMb);
+                    if (ramOption != null)
+                    {
+                        SelectedRamOption = ramOption;
+                    }
+                }
+                
+                // Aplicar tema
+                if (!string.IsNullOrEmpty(settings.ThemeName))
+                {
+                    var theme = ThemeManager.AvailableThemes.FirstOrDefault(x => x.Name == settings.ThemeName);
+                    if (theme != null)
+                    {
+                        ThemeManager.SelectedTheme = theme;
+                    }
                 }
             }
         }
         catch (Exception ex)
         {
             AddLog($"[ERROR] Error cargando configuraciones: {ex.Message}");
+            
+            // Si hay error cargando configuraciones, aplicar configuración por defecto de ChafaServer
+            AddLog("[FALLBACK] Aplicando configuración por defecto de ChafaServer...");
+            Username = "Player";
+            SelectedVersion = "ChafaServer";
+            ModLoaderEnabled = true;
+            SelectedModLoaderName = "Fabric";
+            SelectedModLoaderVersion = "0.16.10";
+            ActualMinecraftVersion = "1.21.1";
+            
+            _ = InitializeSupabaseAsync();
         }
         finally
         {

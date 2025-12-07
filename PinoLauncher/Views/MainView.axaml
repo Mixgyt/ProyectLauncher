@@ -109,57 +109,111 @@
         </Button>
 
         <!-- Botones de utilidad -->
-        <StackPanel Grid.Row="2" Grid.ColumnSpan="4" 
-                    Orientation="Horizontal" 
-                    HorizontalAlignment="Right">
+        <WrapPanel Grid.Row="2" Grid.ColumnSpan="4" 
+                   HorizontalAlignment="Right"
+                   Orientation="Horizontal">
+          <!-- Botón de Mod Loaders -->
           <Button Command="{Binding OpenModLoaderConfigCommand}"
                   IsEnabled="{Binding IsModLoaderButtonEnabled}"
-                  Margin="0,0,10,0"
-                  Padding="10,5"
+                  Margin="0,0,8,5"
+                  Padding="10,6"
                   Background="{DynamicResource CustomModLoaderBrush}"
                   Foreground="White"
-                  CornerRadius="5">
+                  CornerRadius="6"
+                  ToolTip.Tip="Configurar mod loaders">
             <StackPanel Orientation="Horizontal">
-              <LucideIcon Kind="Cog" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
+              <LucideIcon Kind="Cog" StrokeWidth="2" Size="16" Margin="0,0,6,0" VerticalAlignment="Center"/>
               <TextBlock Text="Mod Loaders" 
+                         FontSize="13"
+                         FontWeight="Medium"
                          VerticalAlignment="Center"/>
             </StackPanel>
           </Button>
           
-          <!-- Botón de descarga de mods (solo visible con ChafaServer) -->
-          <Button Command="{Binding DownloadModsFromSupabaseCommand}"
-                  IsVisible="{Binding IsDownloadModsButtonVisible}"
-                  IsEnabled="{Binding !IsDownloadingMods}"
-                  Margin="0,0,10,0"
-                  Padding="10,5"
-                  Background="{DynamicResource SystemControlBackgroundAccentBrush}"
-                  Foreground="White"
-                  CornerRadius="5">
-            <StackPanel Orientation="Horizontal">
-              <LucideIcon Kind="Download" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
-              <TextBlock Text="Descargar Mods" 
-                         VerticalAlignment="Center"/>
-            </StackPanel>
-          </Button>
+          <!-- Botones de gestión de mods (solo visible con ChafaServer) -->
+          <StackPanel Orientation="Horizontal" 
+                      IsVisible="{Binding IsDownloadModsButtonVisible}">
+            <Button Command="{Binding DownloadModsFromSupabaseCommand}"
+                    Margin="0,0,5,0"
+                    Padding="8,4"
+                    Background="{DynamicResource SystemControlBackgroundAccentBrush}"
+                    Foreground="White"
+                    CornerRadius="4"
+                    ToolTip.Tip="Descargar mods faltantes">
+              <Button.IsEnabled>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding Path="!IsDownloadingMods"/>
+                  <Binding Path="!IsCleaningMods"/>
+                </MultiBinding>
+              </Button.IsEnabled>
+              <StackPanel Orientation="Horizontal">
+                <LucideIcon Kind="Download" StrokeWidth="2" Size="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Descargar" 
+                           FontSize="12"
+                           VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button>
+            
+            <Button Command="{Binding CleanAndRedownloadModsCommand}"
+                    Margin="5,0,10,0"
+                    Padding="8,4"
+                    Background="#E74C3C"
+                    Foreground="White"
+                    CornerRadius="4"
+                    ToolTip.Tip="Limpiar y redescargar todos los mods">
+              <Button.IsEnabled>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding Path="!IsDownloadingMods"/>
+                  <Binding Path="!IsCleaningMods"/>
+                </MultiBinding>
+              </Button.IsEnabled>
+              <StackPanel Orientation="Horizontal">
+                <LucideIcon Kind="RotateCcw" StrokeWidth="2" Size="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                <TextBlock Text="Limpiar" 
+                           FontSize="12"
+                           VerticalAlignment="Center"/>
+              </StackPanel>
+            </Button>
+          </StackPanel>
           
-          <Button Command="{Binding OpenMinecraftFolderCommand}"
-                  Margin="0,0,10,0"
-                  Padding="10,5">
-            <StackPanel Orientation="Horizontal">
-              <LucideIcon Kind="Folder" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
-              <TextBlock Text="Abrir carpeta .minecraft" 
-                         VerticalAlignment="Center"/>
+          <!-- Utilidades -->
+          <Border Background="{DynamicResource SystemControlBackgroundAltMediumBrush}" 
+                  BorderBrush="{DynamicResource SystemAccentColor}"
+                  BorderThickness="1"
+                  CornerRadius="6"
+                  Padding="8"
+                  Margin="0,5">
+            <StackPanel Orientation="Vertical">
+              <TextBlock Text="Utilidades" 
+                         FontWeight="SemiBold" 
+                         FontSize="12" 
+                         Foreground="{DynamicResource SystemControlForegroundBaseHighBrush}"
+                         Margin="0,0,0,5"/>
+              <WrapPanel>
+                <Button Command="{Binding OpenMinecraftFolderCommand}"
+                        Margin="0,0,5,5"
+                        Padding="8,4">
+                  <StackPanel Orientation="Horizontal">
+                    <LucideIcon Kind="Folder" StrokeWidth="2" Size="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Abrir carpeta .minecraft" 
+                               FontSize="12"
+                               VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Button>
+                <Button Command="{Binding ClearLogsCommand}"
+                        Margin="0,0,5,5"
+                        Padding="8,4">
+                  <StackPanel Orientation="Horizontal">
+                    <LucideIcon Kind="Trash" StrokeWidth="2" Size="14" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="Limpiar logs" 
+                               FontSize="12"
+                               VerticalAlignment="Center"/>
+                  </StackPanel>
+                </Button>
+              </WrapPanel>
             </StackPanel>
-          </Button>
-          <Button Command="{Binding ClearLogsCommand}"
-                  Padding="10,5">
-            <StackPanel Orientation="Horizontal">
-              <LucideIcon Kind="Trash" StrokeWidth="2" Size="16" Margin="0,0,5,0" VerticalAlignment="Center"/>
-              <TextBlock Text="Limpiar logs" 
-                         VerticalAlignment="Center"/>
-            </StackPanel>
-          </Button>
-        </StackPanel>
+          </Border>
+        </WrapPanel>
       </Grid>
     </Border>
 
