@@ -8,6 +8,10 @@ dotnet clean --configuration Release
 
 echo.
 echo [2/3] Publicando aplicación (ejecutable único)...
+if exist "bin\Release\net9.0\win-x64\publish" (
+    echo Eliminando carpeta de publicación anterior...
+    rmdir /s /q "bin\Release\net9.0\win-x64\publish"
+)
 dotnet publish --configuration Release --runtime win-x64 --self-contained true /p:PublishSingleFile=true /p:PublishReadyToRun=true /p:EnableCompressionInSingleFile=true --output "bin\Release\net9.0\win-x64\publish"
 ren "bin\Release\net9.0\win-x64\publish\PinoLauncher.Desktop.exe" "Launcher.exe"
 echo.

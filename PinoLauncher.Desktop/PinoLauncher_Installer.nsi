@@ -88,7 +88,7 @@ Section "PinoLauncher" SecMain
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PinoLauncher" \
                    "Publisher" "PinoLauncher Team"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PinoLauncher" \
-                   "DisplayVersion" "0.1.1"
+                   "DisplayVersion" "0.7.10"
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PinoLauncher" \
                      "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\PinoLauncher" \

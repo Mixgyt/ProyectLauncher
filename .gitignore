@@ -455,3 +455,4 @@ $RECYCLE.BIN/
 
 .env
 PinoLauncher_Setup.exe
+*.exe

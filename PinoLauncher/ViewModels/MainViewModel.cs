@@ -1032,7 +1032,7 @@ public partial class MainViewModel : ViewModelBase
                 FullscreenMode = false;
                 ModLoaderEnabled = true;
                 SelectedModLoaderName = "Fabric";
-                SelectedModLoaderVersion = "0.16.10";
+                SelectedModLoaderVersion = "0.18.1";
                 
                 // Establecer versión actual para ChafaServer
                 ActualMinecraftVersion = "1.21.1";
@@ -1045,7 +1045,7 @@ public partial class MainViewModel : ViewModelBase
                 }
                 
                 AddLog("[PRIMERA EJECUCIÓN] ✓ ChafaServer configurado automáticamente");
-                AddLog("[PRIMERA EJECUCIÓN] ✓ Fabric 0.16.10 habilitado para Minecraft 1.21.1");
+                AddLog("[PRIMERA EJECUCIÓN] ✓ Fabric 0.18.1 habilitado para Minecraft 1.21.1");
                 
                 // Inicializar Supabase para ChafaServer
                 _ = InitializeSupabaseAsync();
@@ -1067,6 +1067,12 @@ public partial class MainViewModel : ViewModelBase
                 if (!string.IsNullOrEmpty(settings.SelectedVersion) && AvailableVersions.Contains(settings.SelectedVersion))
                 {
                     SelectedVersion = settings.SelectedVersion;
+                    if(string.Equals(settings.SelectedVersion, "ChafaServer", StringComparison.OrdinalIgnoreCase))
+                    {
+                        SelectedModLoaderVersion = "0.18.1";
+                        SelectedModLoaderName = "Fabric";
+                        ActualMinecraftVersion = "1.21.1";
+                    }
                 }
                 
                 // Aplicar configuración de RAM si la opción existe
@@ -1100,7 +1106,7 @@ public partial class MainViewModel : ViewModelBase
             SelectedVersion = "ChafaServer";
             ModLoaderEnabled = true;
             SelectedModLoaderName = "Fabric";
-            SelectedModLoaderVersion = "0.16.10";
+            SelectedModLoaderVersion = "0.18.1";
             ActualMinecraftVersion = "1.21.1";
             
             _ = InitializeSupabaseAsync();
@@ -1159,8 +1165,8 @@ public partial class MainViewModel : ViewModelBase
             {
                 ModLoaderEnabled = true;
                 SelectedModLoaderName = "Fabric";
-                SelectedModLoaderVersion = "0.16.10";
-                AddLog("[CHAFASERVER] Configurado para Minecraft 1.21.1 con Fabric 0.16.10");
+                SelectedModLoaderVersion = "0.18.1";
+                AddLog("[CHAFASERVER] Configurado para Minecraft 1.21.1 con Fabric 0.18.1");
                 
                 // Inicializar Supabase y cargar archivos de mods solo para ChafaServer
                 _ = InitializeSupabaseAsync();
